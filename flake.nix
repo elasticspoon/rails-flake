@@ -33,6 +33,14 @@
         name = "rails-env";
         inherit (pkgs) ruby;
         gemdir = ./.; # Points to Gemfile.lock and gemset.nix
+        # gemConfig = {
+        #   rails = attrs: {
+        #     dontBuild = false;
+        #     postInstall = with pkgs; ''
+        #       echo "Post install hook"
+        #     '';
+        #   };
+        # };
       };
     in
     {
@@ -45,9 +53,13 @@
         default = run;
 
         run = pkgs.mkShell {
-          buildInputs = with pkgs; [ tailwindcss yarn nodejs bundix ] ++ [rubyEnv.wrappedRuby rubyEnv ];
+          buildInputs = with pkgs; [ tailwindcss node2nix pnpm yarn nodejs bundix ] ++ [rubyEnv.wrappedRuby rubyEnv ];
           # buildInputs = [ rubyEnv rubyEnv.wrappedRuby updateDeps ];
 
+            # export BUNDLE_PATH=vendor
+            # export BUNDLE_CACHE_ALL=false
+            # export BUNDLE_NO_INSTALL=true
+            # export BUNDLE_FORCE_RUBY_PLATFORM=true
           shellHook = ''
             export TAILWINDCSS_INSTALL_DIR=${pkgs.tailwindcss}/bin
             export NIX_SHELL="true"
